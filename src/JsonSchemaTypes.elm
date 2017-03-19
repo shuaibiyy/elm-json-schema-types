@@ -1,7 +1,7 @@
 module JsonSchemaTypes
     exposing
         ( PropertyBody(..)
-        , Single
+        , Primitive
         , Object
         , Array
         , Properties
@@ -33,14 +33,14 @@ type alias Path =
 {-| Represents the possible JSON schema types.
 -}
 type PropertyBody
-    = Simple Single
-    | Compound Object
-    | Collection Array
+    = PrimitiveType Primitive
+    | ObjectType Object
+    | ArrayType Array
 
 
 {-| Represents either Number, String or Boolean types.
 -}
-type alias Single =
+type alias Primitive =
     { type_ : String
     , default : Maybe String
     , pattern : Maybe String
@@ -126,13 +126,13 @@ getProperty absPath dict =
                         Just w ->
                             case w of
                                 {--- We return the `Simple` since it can't be composed of more properties --}
-                                Simple s ->
+                                PrimitiveType s ->
                                     Just w
 
-                                Compound c ->
+                                ObjectType c ->
                                     getProperty (concatPath <| List.drop 1 subPaths) c.properties
 
-                                Collection cl ->
+                                ArrayType cl ->
                                     {--- If the path has been exhausted, return the collection --}
                                     if (List.length subPaths) == 1 then
                                         Just w
@@ -161,17 +161,17 @@ updateProp paths newProp k v =
                     if k == key then
                         case v of
                             {--- Leaf path --}
-                            Simple s ->
+                            PrimitiveType s ->
                                 newProp
 
-                            Compound c ->
+                            ObjectType c ->
                                 let
                                     cProps =
                                         Dict.map (updateProp (List.drop 1 paths) newProp) c.properties
                                 in
-                                    Compound { c | properties = cProps }
+                                    ObjectType { c | properties = cProps }
 
-                            Collection cl ->
+                            ArrayType cl ->
                                 {--- If the path has been exhausted, update the collection --}
                                 if (List.length paths) == 1 then
                                     newProp
@@ -183,7 +183,7 @@ updateProp paths newProp k v =
                                     in
                                         case (Dict.get "items" clProps) of
                                             Just x ->
-                                                Collection { cl | items = x }
+                                                ArrayType { cl | items = x }
 
                                             Nothing ->
                                                 v
