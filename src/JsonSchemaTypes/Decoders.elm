@@ -1,6 +1,6 @@
 module JsonSchemaTypes.Decoders
     exposing
-        ( singleDecoder
+        ( primitiveDecoder
         , objectDecoder
         , arrayDecoder
         , propertyDecoder
@@ -10,7 +10,7 @@ module JsonSchemaTypes.Decoders
 {-| Decoders for Json schema types.
 
 # Decoders
-@docs singleDecoder, objectDecoder, arrayDecoder, propertyDecoder, propertiesDecoder
+@docs primitiveDecoder, objectDecoder, arrayDecoder, propertyDecoder, propertiesDecoder
 -}
 
 import Json.Decode as Decode exposing (..)
@@ -53,9 +53,9 @@ stringifyAllTheTypes =
 
 {-| Decode data of type `Single`.
 -}
-singleDecoder : Decoder Single
-singleDecoder =
-    decode Single
+primitiveDecoder : Decoder Primitive
+primitiveDecoder =
+    decode Primitive
         |> required "type" string
         |> maybe "default" (nullable stringifyAllTheTypes)
         |> maybe "pattern" (nullable stringifyAllTheTypes)
@@ -89,9 +89,9 @@ arrayDecoder =
 propertyDecoder : Decode.Decoder PropertyBody
 propertyDecoder =
     oneOf
-        [ map Compound (Decode.lazy (\_ -> objectDecoder))
-        , map Collection arrayDecoder
-        , map Simple singleDecoder
+        [ map ObjectType (Decode.lazy (\_ -> objectDecoder))
+        , map ArrayType arrayDecoder
+        , map PrimitiveType primitiveDecoder
         ]
 
 
@@ -101,7 +101,7 @@ propertiesDecoder : Decode.Decoder Properties
 propertiesDecoder =
     dict <|
         oneOf
-            [ map Compound (Decode.lazy (\_ -> objectDecoder))
-            , map Collection arrayDecoder
-            , map Simple singleDecoder
+            [ map ObjectType (Decode.lazy (\_ -> objectDecoder))
+            , map ArrayType arrayDecoder
+            , map PrimitiveType primitiveDecoder
             ]

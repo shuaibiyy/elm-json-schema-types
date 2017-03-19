@@ -133,25 +133,25 @@ arraySchemaTest =
                         { properties =
                             Dict.fromList
                                 [ ( "items"
-                                  , Collection
+                                  , ArrayType
                                         { type_ = "array"
                                         , minItems = 5
                                         , maxItems = 5
                                         , uniqueItems = Nothing
                                         , additionalItems = Just False
                                         , items =
-                                            (Compound
+                                            (ObjectType
                                                 { properties =
                                                     Dict.fromList
                                                         [ ( "description"
-                                                          , Simple
+                                                          , PrimitiveType
                                                                 { type_ = "string"
                                                                 , default = Nothing
                                                                 , pattern = Nothing
                                                                 }
                                                           )
                                                         , ( "size"
-                                                          , Simple
+                                                          , PrimitiveType
                                                                 { type_ = "string"
                                                                 , default = Nothing
                                                                 , pattern = Nothing
@@ -186,7 +186,7 @@ simpleSchemaTest =
                         { properties =
                             Dict.fromList
                                 [ ( "source_warehouse"
-                                  , Simple
+                                  , PrimitiveType
                                         { type_ = "number"
                                         , default = Just "42"
                                         , pattern = Nothing
@@ -214,14 +214,14 @@ multiPropsSchemaTest =
                         { properties =
                             Dict.fromList
                                 [ ( "order_number"
-                                  , Simple
+                                  , PrimitiveType
                                         { type_ = "number"
                                         , default = Nothing
                                         , pattern = Nothing
                                         }
                                   )
                                 , ( "source_warehouse"
-                                  , Simple
+                                  , PrimitiveType
                                         { type_ = "string"
                                         , default = Nothing
                                         , pattern = Just "[a-zA-Z0-9]{9}$"
@@ -249,32 +249,32 @@ nestedPropsSchemaTest =
                         { properties =
                             Dict.fromList
                                 [ ( "data_op"
-                                  , Simple
+                                  , PrimitiveType
                                         { type_ = "string"
                                         , default = Nothing
                                         , pattern = Nothing
                                         }
                                   )
                                 , ( "data_type"
-                                  , Simple
+                                  , PrimitiveType
                                         { type_ = "string"
                                         , default = Nothing
                                         , pattern = Just "^(tandy|Miller)([a-zA-Z0-9]{6})(carol)$"
                                         }
                                   )
                                 , ( "data"
-                                  , Compound
+                                  , ObjectType
                                         { properties =
                                             Dict.fromList
                                                 [ ( "shipping_country"
-                                                  , Simple
+                                                  , PrimitiveType
                                                         { type_ = "string"
                                                         , default = Nothing
                                                         , pattern = Just "^(tandy|Miller)([a-zA-Z0-9]{6})(carol)$"
                                                         }
                                                   )
                                                 , ( "attach_return_label"
-                                                  , Simple
+                                                  , PrimitiveType
                                                         { type_ = "boolean"
                                                         , default = Nothing
                                                         , pattern = Nothing

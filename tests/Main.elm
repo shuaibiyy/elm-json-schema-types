@@ -1,14 +1,15 @@
 port module Main exposing (..)
 
 import Test
-import JsonSchemaTypes.DecodersTest as DecodersTest
 import Test.Runner.Node exposing (run, TestProgram)
 import Json.Encode exposing (Value)
-
+import JsonSchemaTypesTest
+import JsonSchemaTypes.DecodersTest as DecodersTest
 
 main : TestProgram
 main =
-    [ DecodersTest.all
+    [ JsonSchemaTypesTest.all
+     , DecodersTest.all
     ]
         |> Test.concat
         |> run emit

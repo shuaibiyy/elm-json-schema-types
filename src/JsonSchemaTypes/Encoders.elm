@@ -1,6 +1,6 @@
 module JsonSchemaTypes.Encoders
     exposing
-        ( singleEncoder
+        ( primitiveEncoder
         , objectEncoder
         , arrayEncoder
         , propertyEncoder
@@ -10,7 +10,7 @@ module JsonSchemaTypes.Encoders
 {-| Encoders for Json schema types.
 
 # Encoders
-@docs singleEncoder, objectEncoder, arrayEncoder, propertyEncoder, propertiesEncoder
+@docs primitiveEncoder, objectEncoder, arrayEncoder, propertyEncoder, propertiesEncoder
 -}
 
 import Dict
@@ -35,17 +35,17 @@ maybeString x =
 
 {-| Encode data of type `Single`.
 -}
-singleEncoder : Single -> Value
-singleEncoder single =
+primitiveEncoder : Primitive -> Value
+primitiveEncoder prim =
     object
-        [ ( "__type__", string single.type_ )
-        , ( "default", maybeString single.default )
+        [ ( "__type__", string prim.type_ )
+        , ( "default", maybeString prim.default )
         ]
 
 
 {-| Encode data of type `Boolean`.
 -}
-boolEncoder : Single -> Value
+boolEncoder : Primitive -> Value
 boolEncoder bool =
     object
         [ ( "type", string bool.type_ )
@@ -70,18 +70,18 @@ arrayEncoder array =
 propertyEncoder : PropertyBody -> Value
 propertyEncoder prop =
     case prop of
-        Simple single ->
-            case single.type_ of
+        PrimitiveType prim ->
+            case prim.type_ of
                 "boolean" ->
-                    boolEncoder single
+                    boolEncoder prim
 
                 _ ->
-                    singleEncoder single
+                    primitiveEncoder prim
 
-        Compound obj ->
+        ObjectType obj ->
             objectEncoder obj
 
-        Collection array ->
+        ArrayType array ->
             arrayEncoder array
 
 
